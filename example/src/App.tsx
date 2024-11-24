@@ -7,6 +7,7 @@ import {
   PdfLoader,
   Popup,
   Tip,
+  TableOfContents,
 } from "./react-pdf-highlighter";
 import type {
   Content,
@@ -143,74 +144,87 @@ export function App() {
       >
         <PdfLoader url={url} beforeLoad={<Spinner />}>
           {(pdfDocument) => (
-            <PdfHighlighter
-              pdfDocument={pdfDocument}
-              enableAreaSelection={(event) => event.altKey}
-              onScrollChange={resetHash}
-              scrollRef={(scrollTo) => {
-                scrollViewerTo.current = scrollTo;
-                scrollToHighlightFromHash();
-              }}
-              onSelectionFinished={(
-                position,
-                content,
-                hideTipAndSelection,
-                transformSelection,
-              ) => (
-                <Tip
-                  onOpen={transformSelection}
-                  onConfirm={(comment) => {
-                    addHighlight({ content, position, comment });
-                    hideTipAndSelection();
+            <div style={{ display: "flex", height: "100%" }}>
+              <div
+                style={{
+                  width: "20%",
+                  borderRight: "1px solid #ddd",
+                  overflowY: "auto",
+                }}
+              >
+                <TableOfContents pdfDocument={pdfDocument} />
+              </div>
+              <div style={{ width: "80%" }}>
+                <PdfHighlighter
+                  pdfDocument={pdfDocument}
+                  enableAreaSelection={(event) => event.altKey}
+                  onScrollChange={resetHash}
+                  scrollRef={(scrollTo) => {
+                    scrollViewerTo.current = scrollTo;
+                    scrollToHighlightFromHash();
                   }}
+                  onSelectionFinished={(
+                    position,
+                    content,
+                    hideTipAndSelection,
+                    transformSelection,
+                  ) => (
+                    <Tip
+                      onOpen={transformSelection}
+                      onConfirm={(comment) => {
+                        addHighlight({ content, position, comment });
+                        hideTipAndSelection();
+                      }}
+                    />
+                  )}
+                  highlightTransform={(
+                    highlight,
+                    index,
+                    setTip,
+                    hideTip,
+                    viewportToScaled,
+                    screenshot,
+                    isScrolledTo,
+                  ) => {
+                    const isTextHighlight = !highlight.content?.image;
+
+                    const component = isTextHighlight ? (
+                      <Highlight
+                        isScrolledTo={isScrolledTo}
+                        position={highlight.position}
+                        comment={highlight.comment}
+                      />
+                    ) : (
+                      <AreaHighlight
+                        isScrolledTo={isScrolledTo}
+                        highlight={highlight}
+                        onChange={(boundingRect) => {
+                          updateHighlight(
+                            highlight.id,
+                            { boundingRect: viewportToScaled(boundingRect) },
+                            { image: screenshot(boundingRect) },
+                          );
+                        }}
+                      />
+                    );
+
+                    return (
+                      <Popup
+                        popupContent={<HighlightPopup {...highlight} />}
+                        onMouseOver={(popupContent) =>
+                          setTip(highlight, (highlight) => popupContent)
+                        }
+                        onMouseOut={hideTip}
+                        key={index}
+                      >
+                        {component}
+                      </Popup>
+                    );
+                  }}
+                  highlights={highlights}
                 />
-              )}
-              highlightTransform={(
-                highlight,
-                index,
-                setTip,
-                hideTip,
-                viewportToScaled,
-                screenshot,
-                isScrolledTo,
-              ) => {
-                const isTextHighlight = !highlight.content?.image;
-
-                const component = isTextHighlight ? (
-                  <Highlight
-                    isScrolledTo={isScrolledTo}
-                    position={highlight.position}
-                    comment={highlight.comment}
-                  />
-                ) : (
-                  <AreaHighlight
-                    isScrolledTo={isScrolledTo}
-                    highlight={highlight}
-                    onChange={(boundingRect) => {
-                      updateHighlight(
-                        highlight.id,
-                        { boundingRect: viewportToScaled(boundingRect) },
-                        { image: screenshot(boundingRect) },
-                      );
-                    }}
-                  />
-                );
-
-                return (
-                  <Popup
-                    popupContent={<HighlightPopup {...highlight} />}
-                    onMouseOver={(popupContent) =>
-                      setTip(highlight, (highlight) => popupContent)
-                    }
-                    onMouseOut={hideTip}
-                    key={index}
-                  >
-                    {component}
-                  </Popup>
-                );
-              }}
-              highlights={highlights}
-            />
+              </div>
+            </div>
           )}
         </PdfLoader>
       </div>

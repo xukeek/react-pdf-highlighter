@@ -1,5 +1,5 @@
 {
-  "name": "react-pdf-highlighter",
+  "name": "@xukeek/react-pdf-highlighter",
   "version": "8.0.0-rc.0",
   "description": "Set of React components for PDF annotation",
   "author": "Artem Tyurin <artem.tyurin@gmail.com>",
@@ -43,10 +43,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/agentcooper/react-pdf-highlighter.git"
+    "url": "git+https://github.com/xukeek/react-pdf-highlighter.git"
   },
   "bugs": {
-    "url": "https://github.com/agentcooper/react-pdf-highlighter/issues"
+    "url": "https://github.com/xukeek/react-pdf-highlighter/issues"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.0",
@@ -61,5 +61,8 @@
     "vite": "^5.3.3",
     "vite-plugin-dts": "^4.1.1"
   },
-  "homepage": "https://github.com/agentcooper/react-pdf-highlighter#readme"
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "homepage": "https://github.com/xukeek/react-pdf-highlighter#readme"
 }
