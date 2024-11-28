@@ -4,6 +4,7 @@ interface Props {
   highlights: Array<IHighlight>;
   resetHighlights: () => void;
   toggleDocument: () => void;
+  children?: React.ReactNode;
 }
 
 const updateHash = (highlight: IHighlight) => {
@@ -16,6 +17,7 @@ export function Sidebar({
   highlights,
   toggleDocument,
   resetHighlights,
+  children,
 }: Props) {
   return (
     <div className="sidebar" style={{ width: "25vw" }}>
@@ -82,6 +84,7 @@ export function Sidebar({
           </button>
         </div>
       ) : null}
+      {children}
     </div>
   );
 }
