@@ -66,6 +66,7 @@ interface Props<T_HT> {
   ) => JSX.Element;
   highlights: Array<T_HT>;
   onScrollChange: () => void;
+  onPageChange?: (page: number) => void;
   scrollRef: (scrollTo: (highlight: T_HT) => void) => void;
   pdfDocument: PDFDocumentProxy;
   pdfScaleValue: string;
@@ -77,6 +78,11 @@ interface Props<T_HT> {
   ) => JSX.Element | null;
   enableAreaSelection: (event: MouseEvent) => boolean;
   pdfViewerOptions?: PDFViewerOptions;
+  pdfNavigator?: {
+    goToPage: (page: number) => void;
+    nextPage: () => void;
+    previousPage: () => void;
+  };
 }
 
 const EMPTY_ID = "empty-id";
@@ -120,6 +126,13 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
 
   componentDidMount() {
     this.init();
+    if (this.props.pdfNavigator) {
+      Object.assign(this.props.pdfNavigator, {
+        goToPage: this.goToPage,
+        nextPage: this.nextPage,
+        previousPage: this.previousPage,
+      });
+    }
   }
 
   attachRef = (eventBus: EventBus) => {
@@ -131,6 +144,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       const { ownerDocument: doc } = this.containerNode;
       eventBus.on("textlayerrendered", this.onTextLayerRendered);
       eventBus.on("pagesinit", this.onDocumentReady);
+      eventBus.on("pagechanging", this.onPageChange);  // Add this line
       doc.addEventListener("selectionchange", this.onSelectionChange);
       doc.addEventListener("keydown", this.handleKeyDown);
       doc.defaultView?.addEventListener("resize", this.debouncedScaleValue);
@@ -139,6 +153,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       this.unsubscribe = () => {
         eventBus.off("pagesinit", this.onDocumentReady);
         eventBus.off("textlayerrendered", this.onTextLayerRendered);
+        eventBus.off("pagechanging", this.onPageChange);  // Add this line
         doc.removeEventListener("selectionchange", this.onSelectionChange);
         doc.removeEventListener("keydown", this.handleKeyDown);
         doc.defaultView?.removeEventListener(
@@ -466,6 +481,40 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     );
 
     this.viewer.container.removeEventListener("scroll", this.onScroll);
+  };
+
+  onPageChange = (event: { pageNumber: number }) => {
+    const { onPageChange } = this.props;
+    if (onPageChange) {
+      onPageChange(event.pageNumber);
+    }
+  };
+
+  goToPage = (pageNumber: number) => {
+    if (this.viewer) {
+      const totalPages = this.viewer.pagesCount;
+      const targetPage = Math.max(1, Math.min(pageNumber, totalPages));
+      this.viewer.currentPageNumber = targetPage;
+    }
+  };
+  
+  nextPage = () => {
+    if (this.viewer) {
+      const currentPage = this.viewer.currentPageNumber;
+      const totalPages = this.viewer.pagesCount;
+      if (currentPage < totalPages) {
+        this.viewer.currentPageNumber = currentPage + 1;
+      }
+    }
+  };
+  
+  previousPage = () => {
+    if (this.viewer) {
+      const currentPage = this.viewer.currentPageNumber;
+      if (currentPage > 1) {
+        this.viewer.currentPageNumber = currentPage - 1;
+      }
+    }
   };
 
   onMouseDown: PointerEventHandler = (event) => {

@@ -127,13 +127,78 @@ export function App() {
     );
   };
 
+  const pdfNavigator = {
+    goToPage: (page: number) => {},
+    nextPage: () => {},
+    previousPage: () => {},
+  };
+
   return (
     <div className="App" style={{ display: "flex", height: "100vh" }}>
       <Sidebar
         highlights={highlights}
         resetHighlights={resetHighlights}
         toggleDocument={toggleDocument}
-      />
+      >
+        <div style={{ padding: "1rem" }}>
+          <div style={{ marginBottom: "1rem" }}>
+            <button
+              onClick={() => pdfNavigator.previousPage()}
+              style={{
+                marginRight: "0.5rem",
+                padding: "0.5rem 1rem",
+                cursor: "pointer",
+              }}
+            >
+              Previous Page
+            </button>
+            <button
+              onClick={() => pdfNavigator.nextPage()}
+              style={{
+                marginRight: "0.5rem",
+                padding: "0.5rem 1rem",
+                cursor: "pointer",
+              }}
+            >
+              Next Page
+            </button>
+          </div>
+          <div style={{ marginBottom: "1rem" }}>
+            <input
+              type="number"
+              min="1"
+              onChange={(e) => {
+                const page = parseInt(e.target.value, 10);
+                if (!isNaN(page)) {
+                  pdfNavigator.goToPage(page);
+                }
+              }}
+              style={{
+                width: "60px",
+                marginRight: "0.5rem",
+                padding: "0.5rem",
+              }}
+              placeholder="Page"
+            />
+            <button
+              onClick={(e) => {
+                const input =
+                  e.currentTarget.previousElementSibling as HTMLInputElement;
+                const page = parseInt(input.value, 10);
+                if (!isNaN(page)) {
+                  pdfNavigator.goToPage(page);
+                }
+              }}
+              style={{
+                padding: "0.5rem 1rem",
+                cursor: "pointer",
+              }}
+            >
+              Go to Page
+            </button>
+          </div>
+        </div>
+      </Sidebar>
       <div
         style={{
           height: "100vh",
@@ -147,6 +212,10 @@ export function App() {
               pdfDocument={pdfDocument}
               enableAreaSelection={(event) => event.altKey}
               onScrollChange={resetHash}
+              onPageChange={(page) => {
+                console.log("onPageChange", page);
+              }}
+              pdfNavigator={pdfNavigator}
               scrollRef={(scrollTo) => {
                 scrollViewerTo.current = scrollTo;
                 scrollToHighlightFromHash();
