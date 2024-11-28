@@ -46,7 +46,7 @@ const extendWidth = (A: LTWHP, B: LTWHP) => {
 };
 
 export const optimizeClientRects = (
-  clientRects: Array<LTWHP>,
+  clientRects: Array<LTWHP>
 ): Array<LTWHP> => {
   const rects = sort(clientRects);
 

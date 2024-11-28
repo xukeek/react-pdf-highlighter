@@ -58,7 +58,7 @@ export function TipContainer({
             position: shouldMove ? "below" : "above",
           },
         })
-      : null,
+      : null
   );
 
   return (

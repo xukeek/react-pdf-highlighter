@@ -53,7 +53,7 @@ const initialUrl = searchParams.get("url") || PRIMARY_PDF_URL;
 export function App() {
   const [url, setUrl] = useState(initialUrl);
   const [highlights, setHighlights] = useState<Array<IHighlight>>(
-    testHighlights[initialUrl] ? [...testHighlights[initialUrl]] : [],
+    testHighlights[initialUrl] ? [...testHighlights[initialUrl]] : []
   );
 
   const resetHighlights = () => {
@@ -84,7 +84,7 @@ export function App() {
       window.removeEventListener(
         "hashchange",
         scrollToHighlightFromHash,
-        false,
+        false
       );
     };
   }, [scrollToHighlightFromHash]);
@@ -104,7 +104,7 @@ export function App() {
   const updateHighlight = (
     highlightId: string,
     position: Partial<ScaledPosition>,
-    content: Partial<Content>,
+    content: Partial<Content>
   ) => {
     console.log("Updating highlight", highlightId, position, content);
     setHighlights((prevHighlights) =>
@@ -123,7 +123,7 @@ export function App() {
               ...rest,
             }
           : h;
-      }),
+      })
     );
   };
 
@@ -182,8 +182,8 @@ export function App() {
             />
             <button
               onClick={(e) => {
-                const input =
-                  e.currentTarget.previousElementSibling as HTMLInputElement;
+                const input = e.currentTarget
+                  .previousElementSibling as HTMLInputElement;
                 const page = parseInt(input.value, 10);
                 if (!isNaN(page)) {
                   pdfNavigator.goToPage(page);
@@ -224,7 +224,7 @@ export function App() {
                 position,
                 content,
                 hideTipAndSelection,
-                transformSelection,
+                transformSelection
               ) => (
                 <Tip
                   onOpen={transformSelection}
@@ -241,7 +241,7 @@ export function App() {
                 hideTip,
                 viewportToScaled,
                 screenshot,
-                isScrolledTo,
+                isScrolledTo
               ) => {
                 const isTextHighlight = !highlight.content?.image;
 
@@ -259,7 +259,7 @@ export function App() {
                       updateHighlight(
                         highlight.id,
                         { boundingRect: viewportToScaled(boundingRect) },
-                        { image: screenshot(boundingRect) },
+                        { image: screenshot(boundingRect) }
                       );
                     }}
                   />

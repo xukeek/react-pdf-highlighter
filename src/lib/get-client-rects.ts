@@ -21,7 +21,7 @@ const isClientRectInsidePageRect = (clientRect: DOMRect, pageRect: DOMRect) => {
 export const getClientRects = (
   range: Range,
   pages: Page[],
-  shouldOptimize = true,
+  shouldOptimize = true
 ): Array<LTWHP> => {
   const clientRects = Array.from(range.getClientRects());
 

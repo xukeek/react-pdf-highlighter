@@ -7,7 +7,7 @@ export const getWindow = (element: Element): typeof window =>
   getDocument(element).defaultView || window;
 
 export const isHTMLElement = (
-  element: Element | null,
+  element: Element | null
 ): element is HTMLElement =>
   element != null &&
   (element instanceof HTMLElement ||
@@ -61,8 +61,8 @@ export const getPagesFromRange = (range: Range): Page[] => {
   while (currentPageNumber <= endPage.number) {
     const currentPage = getPageFromElement(
       document.querySelector(
-        `[data-page-number='${currentPageNumber}'`,
-      ) as HTMLElement,
+        `[data-page-number='${currentPageNumber}'`
+      ) as HTMLElement
     );
     if (currentPage) {
       pages.push(currentPage);
@@ -76,7 +76,7 @@ export const getPagesFromRange = (range: Range): Page[] => {
 export const findOrCreateContainerLayer = (
   container: HTMLElement,
   className: string,
-  selector?: string,
+  selector?: string
 ) => {
   const doc = getDocument(container);
   let layer = container.querySelector(selector ? selector : `.${className}`);

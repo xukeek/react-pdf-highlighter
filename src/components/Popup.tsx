@@ -33,7 +33,7 @@ export function Popup({
             paddingY={30}
           >
             {popupContent}
-          </MouseMonitor>,
+          </MouseMonitor>
         );
       }}
       onMouseOut={() => {

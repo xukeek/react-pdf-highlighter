@@ -12,7 +12,7 @@ interface Props {
   onSelection: (
     startTarget: HTMLElement,
     boundingRect: LTWH,
-    resetSelection: () => void,
+    resetSelection: () => void
   ) => void;
   onDragStart: () => void;
   onDragEnd: () => void;

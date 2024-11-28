@@ -3,7 +3,7 @@ import { isHTMLCanvasElement } from "./pdfjs-dom";
 
 export const getAreaAsPNG = (
   canvas: HTMLCanvasElement,
-  position: LTWHP,
+  position: LTWHP
 ): string => {
   const { left, top, width, height } = position;
 
@@ -35,7 +35,7 @@ export const getAreaAsPNG = (
     0,
     0,
     width,
-    height,
+    height
   );
 
   return newCanvas.toDataURL("image/png");
